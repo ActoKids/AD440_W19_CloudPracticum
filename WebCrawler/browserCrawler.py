@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 foundList = []
 queue = []
-output = []
+output = {}
 eventBrite = "https://www.eventbrite.com/d/wa--seattle/disability/?page=1"
 
 def openURL(url):
@@ -47,65 +47,93 @@ def openURL(url):
             page += 1
     while(queue):
         currentURL = queue.pop(0)
-        print(len(queue))
+        print("\n"+ str(len(queue)) + " link's remaining in queue!")
         try:
             print("1. Opening found link - " + currentURL)
             if "seattle" in currentURL or "/e/" in currentURL:
                 openURL(currentURL)
             else:
                 print("Ignoring link")
-        except:
+        except Exception as a:
             try:
-                print("1. Fixing link...  " + currentURL)
+                print(a)
                 openURL(url + currentURL)
             except:
                 print("1. Link failed")
-    createFile()
+    #createFile()
+    createJson()
     #else:
         #print("99. Disabled not found skipping")
 def scanPage(soup):
     global output
-    regex = re.compile('.*event.*')
+    event = re.compile('.*event.*')
     price = re.compile('.*price.*')
-    theData = {}
-    for row in soup.findAll("div", attrs={"class": regex}):
+    theData = {"Title": None, "Date": None, "Location": None, "Description": None, "Price": None}
+
+    for row in soup.findAll("div", attrs={"class": event}):
         for data in row.findAll('h3'):
             if(data.text != " " and data.find_next('p')):
                 if("date" in data.text.lower() or "location" in data.text.lower() or "description" in data.text.lower()):
                     if "date" in data.text.lower():
                         theData["Date"] = data.find_next('p').text
                     if "location" in data.text.lower():
-                        theData["Location"] = data.find_next('p').text
+                        location = " "
+                        for tag in data.find_next('div').findAll("p"):
+                            #print(tag)
+                            if not tag.find("a"):
+                                #print(tag.text)
+                                location = location + tag.text + " "
+                        #print(location)
+                        theData["Location"] = location
                     if "description" in data.text.lower():
-                        theData["Description"] = data.find_next('p').text
+                        theData["Description"] = data.find_next('p').text.replace('\n', " ")
         for data in row.findAll('h1'):         
-            if(data.text != " " and "Title" not in theData):
+            if(data.text != " " and theData["Title"] is None):
                 print("Added to output - " + data.text)
                 theData["Title"] = data.text
     for row in soup.findAll(attrs={"class": price}):
         theData["Price"] = row.text.strip()
-    if len(theData) != 0 and theData not in output:
-        output.append(theData)
+    #print(str(theData))
+    if theData["Title"] is not None and theData["Location"] is not None and theData["Date"] is not None and theData["Title"] not in output:
+        #print(theData)
+        if theData["Description"] is None:
+            theData["Description"] = "None"
+        if theData["Price"] is None:
+            theData["Price"] = "Unknown"
+            
+        output[theData["Title"]] = theData
+        
         #print(output)
         
-
+def createJson():
+    with open('data.json', 'w') as outfile:
+        json.dump(output, outfile)
 def createFile():
     with open("data.txt", "w") as f:
         f.write("{")
         for data in output:           
-            if(len(data) >= 4):
-                f.write("\n   {")
-                if "Title" in data:
-                    f.write("\n      Title: " + data["Title"])
-                if "Price" in data:
-                    f.write("\n      Price: " + data["Price"])
-                if "Date" in data:
-                    f.write("\n      Date: " + data["Date"])
-                if "Location" in data:
-                    f.write("\n      Location: " + data["Location"])
-                if "Description" in data:
-                    f.write("\n      Description: " + data["Description"])
-                f.write("\n   }\n")
+            f.write("\n   {")
+            if data["Title"] is not None:
+                f.write("\n      Title: " + data["Title"])
+            else:
+                f.write("\n      Title: " + "Unknown")
+            if data["Price"] is not None:
+                f.write("\n      Price: " + data["Price"])
+            else:
+                f.write("\n      Price: " + "Unknown")
+            if data["Date"] is not None:
+                f.write("\n      Date: " + data["Date"])
+            else:
+                f.write("\n      Date: " + "Unknown")
+            if data["Location"] is not None:
+                f.write("\n      Location: " + data["Location"])
+            else:
+                f.write("\n      Location: " + "Unknown")
+            if data["Description"] is not None:
+                f.write("\n      Description: " + data["Description"])
+            else:
+                f.write("\n      Description: " + "Unknown")
+            f.write("\n   }\n")
         f.write("}")
 
 def main():
@@ -115,5 +143,6 @@ def main():
     except Exception as e:
         print("Error gathering URL data, Make sure URL is correct / Check your internet connection" + str(e))
     
-
+print("This script crawls a website and creates a data file.")
 main()
+print("Task completed.")
