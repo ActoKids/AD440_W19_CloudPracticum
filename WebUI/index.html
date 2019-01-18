@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Using API in Browser</title>
+    <script>
+        const ENDPOINT = 'https://f8m8j1183j.execute-api.us-east-1.amazonaws.com/prod/ad440TestFunction';
+
+        let message;
+
+        function myFunction() {
+            fetch(ENDPOINT)
+                .then(res => res.json())
+                .then(myJson => {
+                    console.log(myJson);
+                    message = myJson.messageToErik;
+                    date = myJson.todaysDate;
+                    document.getElementById("demo").innerHTML = message;
+                    document.getElementById("date").innerHTML = date;
+                })
+                .catch(err => console.log(err));
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Testing API</h1>
+    <h2 id="demo">Click the button to see the API in action!</h2>
+    <h3 id="date"></h3>
+    <button onclick="myFunction()">Click Me!</button>
+</body>
+
+</html>
