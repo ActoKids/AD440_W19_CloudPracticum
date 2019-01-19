@@ -41,15 +41,21 @@ Before you run the fbEventCrawl.py, your need to have a Facebook account, an acc
   I. you need to go to terminal and install the following libraries:
     pip install facebook-sdk
     pip3 install requests
-  II. You need to have a facebook account, if not create one -->
-    1. Go to link developers.facebook.com, create an account there.
-    2. Go to link developers.facebook.com/tools/explorer.
-        Go to “My apps” drop down in the top right corner and select “add a new app”. Choose a display name and a category and then             “Create App ID”.
-    3. Again get back to the same link developers.facebook.com/tools/explorer. You will see “Graph API Explorer” below “My Apps” in the         top right corner. From “Graph API Explorer” drop down, select your app.
-      Then, select “Get Token”. From this drop down, select “Get User Access Token”. Select permissions from the menu that appears and         then select “Get Access Token.”
-    4. Go to link developers.facebook.com/tools/accesstoken. Select “Debug” corresponding to “User Token”. Go to “Extend Token Access”.         This will ensure that your token does not expire every two hours.
-    5. Copy the token and paste it in the fbEventCrawl.py where it says "YOUR_ACCESS_TOKEN"
-    6. Go to your facebook page and create some events to test out the scrawling of data.
+  II. You need to have a facebook account, if not create one --> 
+  
+  1. Go to link developers.facebook.com, create an account there.
+  
+  2. Go to link developers.facebook.com/tools/explorer.
+     Go to “My apps” drop down in the top right corner and select “add a new app”. Choose a display name and a category and then              “Create App ID”.
+     
+  3. Again get back to the same link developers.facebook.com/tools/explorer. You will see “Graph API Explorer” below “My Apps” in the        top right corner. From “Graph API Explorer” drop down, select your app.
+     Then, select “Get Token”. From this drop down, select “Get User Access Token”. Select permissions from the menu that appears and        then select “Get Access Token.”
+     
+  4. Go to link developers.facebook.com/tools/accesstoken. Select “Debug” corresponding to “User Token”. Go to “Extend Token Access”.        This will ensure that your token does not expire every two hours.
+  
+  5. Copy the token and paste it in the fbEventCrawl.py where it says "YOUR_ACCESS_TOKEN"
+  
+  6. Go to your facebook page and create some events to test out the scrawling of data.
   
   Finally, you can start running the fbEventCrawl.py the see if the output to data.txt matches with your events info you created on your   page.
   
