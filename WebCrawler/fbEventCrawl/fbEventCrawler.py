@@ -66,4 +66,3 @@ def main():
         json.dump(event_data_list, outfile)
    
 
-main()
